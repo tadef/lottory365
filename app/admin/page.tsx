@@ -18,7 +18,7 @@ export default function AdminPage() {
     if (!form.draw_date || !/^\d{6}$/.test(form.first_prize) || !/^\d{2}$/.test(form.back_two)) { setMsg('กรุณากรอกข้อมูลให้ครบและถูกต้อง'); return }
     setSave(true); setMsg('')
     try {
-      const r = await fetch('/api/admin/draws', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-admin-key': pw }, body: JSON.stringify({ draw_date: form.draw_date, draw_date_th: form.draw_date_th, first_prize: form.first_prize, back_two: form.back_two, front_three: [form.front_three_1, form.front_three_2].filter(Boolean), back_three: [form.back_three_1, form.back_three_2].filter(Boolean), nearby_above: form.nearby_above || null, nearby_below: form.nearby_below || null }) })
+      const r = await fetch('/api/lotto/admin', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-admin-key': pw }, body: JSON.stringify({ draw_date: form.draw_date, draw_date_th: form.draw_date_th, first_prize: form.first_prize, back_two: form.back_two, front_three: [form.front_three_1, form.front_three_2].filter(Boolean), back_three: [form.back_three_1, form.back_three_2].filter(Boolean), nearby_above: form.nearby_above || null, nearby_below: form.nearby_below || null }) })
       const j = await r.json()
       if (!r.ok) throw new Error(j.error)
       setMsg('✅ บันทึกสำเร็จ งวด ' + form.draw_date_th)
