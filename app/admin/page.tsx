@@ -1,8 +1,6 @@
 'use client'
 import { useState } from 'react'
 
-const ADMIN_PW = process.env.NEXT_PUBLIC_ADMIN_PASSWORD
-
 export default function AdminPage() {
   const [pw, setPw]       = useState('')
   const [auth, setAuth]   = useState(false)
@@ -16,10 +14,14 @@ export default function AdminPage() {
     setForm(f => ({ ...f, draw_date: v, draw_date_th: !isNaN(d.getTime()) ? `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()+543}` : '' }))
   }
 
-  function login() {
+  async function login() {
     if (!pw) { alert('กรุณากรอกรหัสผ่าน'); return }
-    if (!ADMIN_PW) { alert('ยังไม่ได้ตั้งค่า NEXT_PUBLIC_ADMIN_PASSWORD ใน Vercel'); return }
-    if (pw !== ADMIN_PW) { alert('รหัสผ่านไม่ถูกต้อง'); return }
+    const r = await fetch('/api/lotto/check', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key: pw })
+    })
+    if (r.status === 401) { alert('รหัสผ่านไม่ถูกต้อง'); return }
     setAuth(true)
   }
 
