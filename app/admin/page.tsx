@@ -35,7 +35,11 @@ export default function AdminPage() {
       <div style={{ background: '#1a1a1a', border: '1px solid #2e2e2e', borderRadius: 20, padding: '2rem', width: '100%', maxWidth: 360 }}>
         <p style={{ fontWeight: 900, fontSize: '1.2rem', textAlign: 'center', marginBottom: '1.5rem', color: '#f0ece1' }}>LOTTORY<span style={{ color: '#c99b30' }}>365</span> Admin</p>
         <input type="password" value={pw} onChange={e=>setPw(e.target.value)} onKeyDown={e=>e.key==='Enter'&&setAuth(true)} placeholder="รหัสผ่าน" style={{ ...inp, marginBottom: 12 }} />
-        <button onClick={()=>setAuth(true)} style={btn}>เข้าสู่ระบบ</button>
+       <button onClick={async()=>{
+  if(!pw){alert('กรุณากรอกรหัสผ่าน');return}
+  const r=await fetch('/api/lotto/admin',{method:'POST',headers:{'Content-Type':'application/json','x-admin-key':pw},body:JSON.stringify({_check:true})})
+  if(r.status===401){alert('รหัสผ่านไม่ถูกต้อง')}else{setAuth(true)}
+}} style={btn}>เข้าสู่ระบบ</button>
       </div>
     </div>
   )
