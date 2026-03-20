@@ -1,6 +1,8 @@
 'use client'
 import { useState } from 'react'
 
+const ADMIN_PW = process.env.NEXT_PUBLIC_ADMIN_PASSWORD
+
 export default function AdminPage() {
   const [pw, setPw]       = useState('')
   const [auth, setAuth]   = useState(false)
@@ -12,6 +14,13 @@ export default function AdminPage() {
   const onDate = (v: string) => {
     const d = new Date(v)
     setForm(f => ({ ...f, draw_date: v, draw_date_th: !isNaN(d.getTime()) ? `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()+543}` : '' }))
+  }
+
+  function login() {
+    if (!pw) { alert('กรุณากรอกรหัสผ่าน'); return }
+    if (!ADMIN_PW) { alert('ยังไม่ได้ตั้งค่า NEXT_PUBLIC_ADMIN_PASSWORD ใน Vercel'); return }
+    if (pw !== ADMIN_PW) { alert('รหัสผ่านไม่ถูกต้อง'); return }
+    setAuth(true)
   }
 
   async function save() {
@@ -34,12 +43,8 @@ export default function AdminPage() {
     <div style={{ minHeight: '100vh', background: '#0f0f0f', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div style={{ background: '#1a1a1a', border: '1px solid #2e2e2e', borderRadius: 20, padding: '2rem', width: '100%', maxWidth: 360 }}>
         <p style={{ fontWeight: 900, fontSize: '1.2rem', textAlign: 'center', marginBottom: '1.5rem', color: '#f0ece1' }}>LOTTORY<span style={{ color: '#c99b30' }}>365</span> Admin</p>
-        <input type="password" value={pw} onChange={e=>setPw(e.target.value)} onKeyDown={e=>e.key==='Enter'&&setAuth(true)} placeholder="รหัสผ่าน" style={{ ...inp, marginBottom: 12 }} />
-      <button onClick={async()=>{
-  if(!pw){alert('กรุณากรอกรหัสผ่าน');return}
-  if(pw!==process.env.NEXT_PUBLIC_ADMIN_PASSWORD){alert('รหัสผ่านไม่ถูกต้อง');return}
-  setAuth(true)
-}} style={btn}>เข้าสู่ระบบ</button>
+        <input type="password" value={pw} onChange={e=>setPw(e.target.value)} onKeyDown={e=>{ if(e.key==='Enter') login() }} placeholder="รหัสผ่าน" style={{ ...inp, marginBottom: 12 }} />
+        <button onClick={login} style={btn}>เข้าสู่ระบบ</button>
       </div>
     </div>
   )
